@@ -53,14 +53,14 @@
         let stream;
 
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then((stream) => {
-                video.srcObject = stream;
+            .then((receivedStream) => {
+                video.srcObject = receivedStream;
                 video.addEventListener('loadedmetadata', () => {
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
                 });
                 stopButton.addEventListener('click', stopCamera);
-                stream = stream;
+                stream = receivedStream;
             })
             .catch((error) => {
                 console.error('Error accessing camera: ', error);
@@ -68,7 +68,7 @@
 
         function drawImage() {
             const img = new Image();
-            img.src = 'data:image/jpeg;base64,{{ image }}';
+            img.src = 'data:image/jpeg;base64,{% raw %}{{ image }}{% endraw %}';
             img.onload = () => {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.drawImage(img, 0, 0, canvas.width, canvas.height);
