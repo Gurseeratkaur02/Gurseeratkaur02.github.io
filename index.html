@@ -29,6 +29,10 @@
             top: 0;
             left: 0;
         }
+
+        #stop-button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -38,10 +42,15 @@
         <canvas id="canvas"></canvas>
     </div>
 
+    <button id="stop-button">Stop Camera</button>
+
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const context = canvas.getContext('2d');
+        const stopButton = document.getElementById('stop-button');
+
+        let stream;
 
         navigator.mediaDevices.getUserMedia({ video: true })
             .then((stream) => {
@@ -50,6 +59,8 @@
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
                 });
+                stopButton.addEventListener('click', stopCamera);
+                stream = stream;
             })
             .catch((error) => {
                 console.error('Error accessing camera: ', error);
@@ -65,6 +76,15 @@
         }
 
         setInterval(drawImage, 100);
+
+        function stopCamera() {
+            if (stream) {
+                const tracks = stream.getTracks();
+                tracks.forEach((track) => track.stop());
+                video.srcObject = null;
+                stopButton.disabled = true;
+            }
+        }
     </script>
 </body>
 
